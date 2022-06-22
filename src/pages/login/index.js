@@ -1,13 +1,16 @@
+// Login
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useLoginContext } from '../../context/loginContext';
+import { useLoginUpdateContext } from '../../context/loginContext';
 
 const Login = () => {
 
-    const { logIn } = useLoginContext();
     const navigate = useNavigate();
-
+    
+    const dispatch = useLoginUpdateContext();
+    
     const [allValues, setAllValues] = useState({
         username: '',
         password: ''
@@ -20,8 +23,10 @@ const Login = () => {
         },
         submit: (e) => {
             e.preventDefault();
-            logIn(allValues);
-            navigate('home');
+            if(allValues?.username !== '' && allValues?.password !== '') {
+                dispatch({type: 'LOGIN', payload: allValues});
+                navigate('home');
+            }
         }
     }
 

@@ -1,12 +1,13 @@
-import React from 'react';
+// App
+
+import React, { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
+import Navbar from "./components/navbar";
 import { LoginContextProvider } from './context/loginContext';
 
-import Navbar from "./components/navbar";
-
-import Home from './pages/home';
-import Login from './pages/login';
+const Home = lazy(() => import('./pages/home'));
+const Login = lazy(() => import('./pages/login'));
 
 const App = () => {
 	
@@ -15,11 +16,15 @@ const App = () => {
 			<LoginContextProvider>
 				<Navbar />
 
-				<Routes>
-					<Route path="" element={<Login />} ></Route>
-					<Route path="/home" element={<Home />} ></Route>
-				</Routes>
+				<Suspense fallback={<p>Loading</p>}>
+					<Routes>
+						<Route path="" element={<Login />} ></Route>
+						<Route path="/home" element={<Home />} ></Route>
+					</Routes>
+				</Suspense>
+
 			</LoginContextProvider>
+
 		</React.Fragment>
 	);
 }

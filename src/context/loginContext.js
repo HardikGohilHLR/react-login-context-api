@@ -1,36 +1,45 @@
-import React, { createContext, useContext, useState } from 'react'
+// Login Context
+import React, { createContext, useContext, useReducer } from 'react';
 
+const LoginContext = createContext();
+const LoginUpdateContext = createContext();
 
-// Context
-export const loginContext = createContext({
+// State
+const initialState = {
     user: null,
-    login: () => {},
-    logout: () => {}
-});
+};
 
-const USER = { username: "Guest", isGuestUser: true };
+// Reducer
+const loginReducer = (state = initialState, action) => {
+    switch (action.type) {
+        case 'LOGIN': 
+            return { ...state, ...action.payload };
+        case 'LOGOUT': 
+            return {};
+        default:
+            return;
+    }
+}
+
+// Use context
+export const useLoginContext = (cb) => {
+    return cb(useContext(LoginContext));
+}
+
+export const useLoginUpdateContext = () => {
+    return useContext(LoginUpdateContext);
+}
 
 // Provider
 export const LoginContextProvider = ({children}) => {
 
-    const [user, setUser] = useState(USER); 
+    const [state, dispatch] = useReducer(loginReducer, initialState);
 
-    const logIn = (loginDetails) => {
-        setUser({ isGuestUser: false, username: loginDetails?.username });
-    }
-    const logOut = () => {
-        setUser({ isGuestUser: true, username: '' });
-    }
-    
-    return <loginContext.Provider value={{user, logIn, logOut}}>
-        {children}
-    </loginContext.Provider>
-}
-
-// Use context
-export const useLoginContext = () => {
-
-    const { user, logIn, logOut } = useContext(loginContext);
-
-    return { user, logIn, logOut };
+    return (
+        <LoginContext.Provider value={state}>
+            <LoginUpdateContext.Provider value={dispatch}>
+                {children}
+            </LoginUpdateContext.Provider>
+        </LoginContext.Provider>
+    )
 }

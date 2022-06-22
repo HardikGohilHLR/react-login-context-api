@@ -1,15 +1,19 @@
+// Navbar
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useLoginContext } from '../context/loginContext';
+import { useLoginContext, useLoginUpdateContext } from '../context/loginContext';
 
 const Navbar = () => {
 
-    const { user, logOut } = useLoginContext();
-    const navigate = useNavigate();
+    const _USER = useLoginContext(e => e?.username);
+    const dispatch = useLoginUpdateContext();
+
+    const navigate = useNavigate();    
 
     const logOutUser = () => {
-        logOut();
+        dispatch({type: 'LOGOUT', payload: {}});
         navigate('');
     }
         
@@ -27,9 +31,9 @@ const Navbar = () => {
                         <div className="navbar-end">
                             
                             {
-                                !user?.isGuestUser ? <>
+                                _USER && !_USER?.isGuestUser ? <>
                                 <div className={`navbar-item`}>
-                                    <span> Hey, {user?.username} </span>
+                                    <span> Hey, {_USER} </span>
                                 </div>
                                 
                                 <div className="navbar-item">
